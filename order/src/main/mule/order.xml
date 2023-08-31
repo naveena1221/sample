@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="35999c95-ed18-4989-b91e-78726d2a6698" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="orderFlow" doc:id="36b92930-9251-4e2d-b449-902f88b7cccb" >
+		<http:listener doc:name="Listener" doc:id="12b0afa5-72bc-4657-a0ba-1343a9aa8ad4" config-ref="HTTP_Listener_config" path="order"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d42c3ad0-965c-4a67-87d0-73d42e07eca0" message="continue"/>
+		<set-variable value="200" doc:name="Set Variable" doc:id="45066e89-bf9f-4e81-9f6e-5783413f6fac" variableName="amount"/>
+		<choice doc:name="Choice" doc:id="874ed5a1-8617-49d1-8655-c2883d42b9a5" >
+			<when expression="#[payload.order_amount&lt;=vars.amount]">
+				<ee:transform doc:name="Transform Message" doc:id="6c19485f-84f6-46bc-ab8c-724d2ae51d17" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"Order placed successfully"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<raise-error doc:name="Raise error" doc:id="834ae0b5-0304-4782-8cfe-7f7389714525" type="in: INSUFFICIENT-FUNDS" description="you dont have sufficient money in your account"/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="5f4a208a-f721-41c9-b8aa-d3c4c3d56df3" message="#[payload]"/>
+	</flow>
+</mule>
