@@ -11,6 +11,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="orderFlow" doc:id="36b92930-9251-4e2d-b449-902f88b7cccb" >
 		<http:listener doc:name="Listener" doc:id="12b0afa5-72bc-4657-a0ba-1343a9aa8ad4" config-ref="HTTP_Listener_config" path="order"/>
 		<logger level="INFO" doc:name="Logger" doc:id="d42c3ad0-965c-4a67-87d0-73d42e07eca0" message="continue"/>
+		<logger level="INFO" doc:name="Logger" doc:id="46c434df-25e5-47f7-8219-2dd36e9f38ed" message="lets start"/>
 		<set-variable value="200" doc:name="Set Variable" doc:id="45066e89-bf9f-4e81-9f6e-5783413f6fac" variableName="amount"/>
 		<choice doc:name="Choice" doc:id="874ed5a1-8617-49d1-8655-c2883d42b9a5" >
 			<when expression="#[payload.order_amount&lt;=vars.amount]">
